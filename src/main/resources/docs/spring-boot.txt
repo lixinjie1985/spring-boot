@@ -1,0 +1,60 @@
+pom文件继承自父亲spring-boot-starter-parent，指定版本号1.5.9.RELEASE
+可以声明一到多个starter，如spring-boot-starter-web，无需指定版本号
+可以使用maven插件打成可执行jar包，spring-boot-maven-plugin，无需指定版本号
+
+mvn dependency:tree，查看项目的依赖包
+@EnableAutoConfiguration，告诉spring根据你添加的依赖包来猜测如何配置你的spring项目
+因为spring-boot-starter-web会添加tomcat和springmvc，所以自动配置就假定你在开发一个web应用，就按web应用来给你配置
+自动配置被设计为和starter一起工作，但也可以和自己在外面直接添加的jar包一起工作，完成自动配置
+SpringApplication类引导我们的应用，并启动spring，再由spring来启动我们自动配置的tomcat，传递给run方法的那个.class告知它自己就是主spring组件
+mvn spring-boot:run，从工程根目录启动应用
+spring-boot-maven-plugin，可以用来创建可执行的jar包，包含编译后的class文件和所有依赖的jar包，以java -jar来运行该jar包
+
+从spring-boot-starter-parent主要继承了java1.6的编译级别，UTF-8编码，spring-boot-dependencies依赖管理，资源过滤application.properties和application.yml
+可以在pom中重写单个依赖的版本号，如下
+<properties>
+    <spring-data-releasetrain.version>Fowler-SR2</spring-data-releasetrain.version>
+</properties>
+13.2.2 也可以不从父亲继承
+
+改变java版本，如下
+<properties>
+    <java.version>1.8</java.version>
+</properties>
+
+13.5 starter
+
+包结构，主类位于root package，@EnableAutoConfiguration经常位于主类上，隐士的定义了一个base package用于扫描
+使用root package，允许使用@ComponentScan而不用指定它的basePackage属性，也可以使用@SpringBootApplication
+
+推荐使用基于java的配置，最好主类是一个@Configuration类，定义main方法的类通常是主@Configuration类很好的备选
+不用把所有的配置放到一个@Configuration类中，可以使用@Import引入其它配置类，或使用@ComponentScan来扫描
+可以在@Configuration类中使用@ImportResource加载xml配置文件
+通过把@EnableAutoConfiguration或者@SpringBootApplication添加到主@Configuration类来开启自动配置
+自动配置是非侵害的，一旦你定义了自己的配置，如添加DataSource bean，那么它将代替自动配置，
+可以使用@EnableAutoConfiguration的exclude属性来禁用指定的自动配置，如@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+也可以使用excludeName属性指定一个类的全名来禁用该自动配置，也可以使用spring.autoconfigure.exclude property来控制被排除的自动配置类列表
+spring bean和依赖注入，@ComponentScan，@Autowired，@Component，@Service，@Repository，@Controller
+@SpringBootApplication = @Configuration + @EnableAutoConfiguration + @ComponentScan，一个顶三个，其中@EnableAutoConfiguration和@ComponentScan的属性还可以通过第一个来指定
+
+
+20 spring-boot-devtools，这个开发工具使开发体验稍微好一些，在开发过程中会自动禁用cache，或者也可以在application.properties中禁用cache
+当类路径里的文件改变时，会自动重启，也可以配置成禁用自动重启
+
+把应用打成jar包用于生产环境，因为是自包含的，所以理想地适用于基于云的部署
+
+66 maven插件来打包，可以打成可执行jar包，或可以部署的war包
+
+
+72.2 可以把一些配置放到外面，如放到application.properties中，@PropertySource，
+72.7 不同的环境选择不用的配置，application-${profile}.properties或者application.yml
+
+73.1.1 采用@Bean方式添加servlet、filter、listener等的注册，添加FilterRegistrationBean或ServletRegistrationBean来进行一些映射配置
+73.1.2 使用@WebServlet, @WebFilter, 和@WebListener标记自定义的相应类，使用@Configuration和@ServletComponentScan来完成扫描和自动注册
+
+74.5 文件上传，默认文件是1M，一个请求中文件总大小是10M
+
+74.7 提供@Configuration和@EnableWebMvc，这要可以让你来完全控制MVC的配置，系统不再自动配置
+
+
+
