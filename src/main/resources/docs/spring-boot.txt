@@ -42,14 +42,37 @@ spring bean和依赖注入，@ComponentScan，@Autowired，@Component，@Service
 当类路径里的文件改变时，会自动重启，也可以配置成禁用自动重启
 
 把应用打成jar包用于生产环境，因为是自包含的，所以理想地适用于基于云的部署
+24 外部的配置
 
-66 maven插件来打包，可以打成可执行jar包，或可以部署的war包
+25 profile
 
-72.1.1如果一些配置所需要的值恰好在maven的pom中出现，那就可以直接引用pom中的值，使用@..@这样的方式，如@project.build.sourceEncoding@
+26 日志
+
+27 部署应用
+
+30 NoSQL的使用，如redis
+31 缓存，如redis
+32 消息队列
+34 验证
+39 spring session，可以存储到多种介质中，如redis
+41 测试
+44 
+66 maven插件来打包，可以打成可执行jar包，或可以部署的war包，具体参考官方文档的该章节
+
+72.1.1 如果一些配置所需要的值恰好在maven的pom中出现，那就可以直接引用pom中的值，使用@..@这样的方式，如@project.build.sourceEncoding@
 如果没有继承自父starter，则需进行简单配置，具体参考官方文档的该章节
 72.2 可以把一些配置放到外面，如放到application.properties中，如spring.main.web-environment=false
-
-72.7 不同的环境选择不用的配置，application-${profile}.properties或者application.yml
+72.3 改变外部属性的位置，不同来源（地方）配置的属性会按照一定的顺序添加到spring的Environment中，可以使用@PropertySource注解
+来扩大或修改这种外部属性，那些被传进去的类，并且使用setSources()的方式被添加进去，会检查这些类是否有@PropertySources注解
+如果有的话，这些属性会在容器启动过程中足够早的时候被添加到Environment中，然后可用于生命周期中的所有阶段，以这种方式添加的属性
+具有较低的优先级，比application.properties、system properties、environment variables、the command line都低
+可以通过在system properties、environment variables中设置spring.config.name来改变默认属性文件(application.properties)的名称
+设置spring.config.location来改变默认位置(类路径)。application.properties就是一个单独的可以设置属性的源
+它可以被system properties、environment variables、the command line重写
+72.6 设置激活profile，可以通过在application.properties、system properties、environment variables、the command line设置spring.profiles.active=production
+来激活生产环境，命令行如：$ java -jar -Dspring.profiles.active=production demo-0.0.1-SNAPSHOT.jar
+也可以通过API的方式SpringApplicationBuilder.profiles()来设置
+72.7 不同的环境选择不用的配置，application-${profile}.properties(多个配置文件)或者application.yml(一个文件里的多个部分)，具体参考官方文档的该章节
 
 73.1.1 采用@Bean方式添加servlet、filter、listener等的注册，添加FilterRegistrationBean或ServletRegistrationBean来进行一些映射配置
 73.1.2 使用@WebServlet, @WebFilter, 和@WebListener标记自定义的相应类，使用@Configuration和@ServletComponentScan来完成扫描和自动注册
