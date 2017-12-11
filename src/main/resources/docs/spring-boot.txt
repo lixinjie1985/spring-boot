@@ -45,8 +45,10 @@ spring bean和依赖注入，@ComponentScan，@Autowired，@Component，@Service
 
 66 maven插件来打包，可以打成可执行jar包，或可以部署的war包
 
+72.1.1如果一些配置所需要的值恰好在maven的pom中出现，那就可以直接引用pom中的值，使用@..@这样的方式，如@project.build.sourceEncoding@
+如果没有继承自父starter，则需进行简单配置，具体参考官方文档的该章节
+72.2 可以把一些配置放到外面，如放到application.properties中，如spring.main.web-environment=false
 
-72.2 可以把一些配置放到外面，如放到application.properties中，@PropertySource，
 72.7 不同的环境选择不用的配置，application-${profile}.properties或者application.yml
 
 73.1.1 采用@Bean方式添加servlet、filter、listener等的注册，添加FilterRegistrationBean或ServletRegistrationBean来进行一些映射配置
