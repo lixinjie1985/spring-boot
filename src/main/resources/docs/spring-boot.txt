@@ -43,8 +43,34 @@ spring bean和依赖注入，@ComponentScan，@Autowired，@Component，@Service
 
 把应用打成jar包用于生产环境，因为是自包含的，所以理想地适用于基于云的部署
 24 外部的配置
+24.1 配置随机数，RandomValuePropertySource，可产生integers，longs，uuids，strings，具体参考官方文档该章节
+24.2 使用SpringApplication.setAddCommandLineProperties(false)禁止命令行参数添加到Environment中
+24.3 spring从当前目录的/config子目录、当前目录、类路径中的/config包、类路径的根加载application.properties文件并把属性添加到Environment中
+可以使用spring.config.name和spring.config.location定制该属性文件的名称和位置，由于这两个参数值使用的非常早来决定哪个文件被加载
+所以它们只能定义在 OS env、system property、command line argument三者当中。所以该属性文件一共可以有六个位置，且优先级从高到低依次为
+file:./custom-config/、classpath:custom-config/、file:./config/、file:./、classpath:/config/、classpath:/
+可以使用优先级高的配置值去重写优先级地的配置值
+24.4 除了application.properties之外，还有和profile相关的属性文件，如application-{profile}.properties，当没有profile被激活时
+使用默认的profile属性文件application-default.properties，这些profile相关的属性文件也位于上面六个目录中，且优先级高
+如果在spring.config.location里指定了文件，那么这些文件里和profile相关的变量将不会被考虑，如果想要被考虑的话
+请在spring.config.location里指定目录，而不要指定文件
+24.5 application.properties里也可以使用占位符${}，这些占位符的值来源于已经存在于Environment中的值，
+24.6.1 使用YAML代替Properties，spring有两种方式可以加载YAML，YamlPropertiesFactoryBean加载YAML为Properties，YamlMapFactoryBean加载YAML为Map
+具体参考官方文档的该章节，可以使用@ConfigurationProperties把一个YAML文档转换为一个类的对应属性
+24.6.2 暴露YAML的属性到spring的Environment中，使用YamlPropertySourceLoader类进行暴露，就可以使用@Value来访问YAML属性
+24.6.3 一个YAML文档中包含多个profile部分，具体参考官方文档的该章节
+24.6.4 YAML文件不能使用@PropertySource注解来加载，properties文件可以
+24.7 Type-safe Configuration Properties
+24.7.1 第三方的配置，@ConfigurationProperties可以用在@Bean方法上，这样该bean从Environment中配置并被注册
+24.7.3 外部属性在绑定到@ConfigurationProperties bean时会强制进行类型转换
+24.7.4 @ConfigurationProperties的bean可以使用@Validated注解进行验证，具体参考官方文档的该章节
 
-25 profile
+25 profile，可以使用@Profile来限制@Component或者@Configuration的加载，来达到不同环境加载不同组件的目的，只要当一个环境被激活时
+spring.profiles.active=dev,hsqldb，对应该环境的组件就会被加载
+25.1 可以使用spring.profiles.include添加更多的profile到当前的profile中，也可使用SpringApplication.setAdditionalProfiles()方法来设置额外的profile
+也要当profile被激活时，所有额外的profile都会被激活，具体参考官方文档的该章节
+25.2 可以使用SpringApplication.setAdditionalProfiles(…​)设置要激活的profile，可以使用ConfigurableEnvironment来激活profile
+25.3 和profile相关的属性配置文件application-{profile}.properties
 
 26 日志
 
