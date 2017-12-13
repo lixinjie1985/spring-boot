@@ -74,7 +74,20 @@ spring.profiles.active=dev,hsqldb，对应该环境的组件就会被加载
 
 26 日志
 
-27 部署应用
+27 开发web应用
+27.1.1 如果想保持Spring Boot MVC特性，仅仅添加额外的mvc配置，那添加一个@Configuration标注的WebMvcConfigurerAdapter类
+不要标注@EnableWebMvc注解。可以添加一个WebMvcRegistrationsAdapter类来提供对RequestMappingHandlerMapping，RequestMappingHandlerAdapter
+ExceptionHandlerExceptionResolver的自定义。如果想完全的控制Spring MVC，可以同时添加@Configuration和@EnableWebMvc
+27.1.2 使用Spring Boot的HttpMessageConverters来添加自定义的converters
+27.1.3 为某个特定的类自定义JSON序列化器和反序列化器，具体参看官方文档的该章节
+27.1.4 从数据绑定错误产生错误码来渲染错误消息，MessageCodesResolver，可参考官方文档了解更多
+27.1.5 默认Spring Boot从类路径中或web根目录中的/static、/public、/resources、/META-INF/resources目录中查找静态内容
+是使用来自springmvc的ResourceHttpRequestHandler，如果要修改这种行为的话可以添加WebMvcConfigurerAdapter类并重写
+addResourceHandlers方法。使用spring.resources.static-locations来自定义静态资源位置或添加额外的静态资源位置
+使用spring.mvc.static-path-pattern来定义访问静态资源的模式（路径模式），总体来说就是当访问一个静态资源的url时从什么地方
+来查找这个静态资源（比如一个图片）
+27.1.7 springmvc使用WebBindingInitializer来为一个特殊的请求初始化一个WebDataBinder，请创建一个ConfigurableWebBindingInitializer类的@Bean即可
+27.1.9 统一异常处理，参考官方文档的该章节
 
 30 NoSQL的使用，如redis
 31 缓存，如redis
